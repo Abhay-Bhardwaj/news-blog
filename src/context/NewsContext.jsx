@@ -11,7 +11,7 @@ export const NewsProvider = ({ children }) => {
     useEffect(() => {
         // axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`)
         //     .then(response => setArticles(response.data.articles))
-        //     .catch(error => console.error('Error in Api request news:', error));
+        //     .catch(error => console.error('Error in Api Data request:', error));
 
         setArticles(NewsData);
     }, []);

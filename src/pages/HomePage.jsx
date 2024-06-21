@@ -14,29 +14,36 @@ export default function HomePage() {
     const [filteredArticles, setFilteredArticles] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
+    const [shouldRunFirstEffect, setShouldRunFirstEffect] = useState(true);
 
-    // Parse URL parameters to set initial state
+
+    //Handles location changes
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const searchParam = params.get('q') || '';
-        const categoryParam = params.get('category') || 'All';
+        const categoryParam = params.get('category') || 'all';
         setSearch(searchParam);
         setCategory(categoryParam);
+
+        setShouldRunFirstEffect(false);
     }, [location.search]);
 
     // Filtering Data on the basis of category and search
     useEffect(() => {
-        const newArticles = filterData({ data: articles, category, searchterm: search });
-        setFilteredArticles(newArticles);
-        setCurrentPage(1);
+        if (!shouldRunFirstEffect) {
+            const newArticles = filterData({ data: articles, category, searchterm: search });
+            setFilteredArticles(newArticles);
+            setCurrentPage(1);
 
-        // Update URL with search and category parameters
-        const params = new URLSearchParams();
-        if (search) params.set('q', search.toLowerCase());
-        if (category && category !== 'All') params.set('category', category.toLowerCase());
-        navigate(`?${params.toString()}`, { replace: true });
-    }, [category, search, articles, navigate]);
+            // Update URL with search and category parameters
+            const params = new URLSearchParams();
+            if (search) params.set('q', search.toLowerCase());
+            if (category && category !== 'all') params.set('category', category.toLowerCase());
+            navigate(`?${params.toString()}`, { replace: true });
+        }
+    }, [category, search, articles, navigate, shouldRunFirstEffect]);
 
+    
     // Pagination Logic Starts
     const indexOfLastArticle = currentPage * articlesPerPage;
     const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;

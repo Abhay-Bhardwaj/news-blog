@@ -5,13 +5,13 @@ export const NewsContext = createContext();
 
 export const NewsProvider = ({ children }) => {
     const [articles, setArticles] = useState([]);
-    const initialLiked = JSON.parse(window.localStorage.getItem('likedArticles')) || [];
+    const initialLiked = JSON.parse(localStorage.getItem('likedArticles')) || [];
     const [liked, setLiked] = useState(initialLiked);
 
     useEffect(() => {
         // axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`)
         //     .then(response => setArticles(response.data.articles))
-        //     .catch(error => console.error('Error fetching news:', error));
+        //     .catch(error => console.error('Error in Api request news:', error));
 
         setArticles(NewsData);
     }, []);
@@ -24,7 +24,6 @@ export const NewsProvider = ({ children }) => {
                 return [...prevLiked, id];
             }
         });
-        
     };
 
     useEffect(() => {

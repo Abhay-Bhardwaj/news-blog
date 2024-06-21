@@ -16,7 +16,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/article/:id" element={<ArticlePage />} />
             <Route path="/favourite" element={<LikedPage />} />
-            
         </Routes>
       </Router>
 

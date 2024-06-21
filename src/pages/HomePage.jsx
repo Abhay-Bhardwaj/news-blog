@@ -3,6 +3,7 @@ import NewsCard from '../components/NewsCard';
 import SearchBar from '../components/SearchBar';
 import { NewsContext } from '../context/NewsContext';
 import { filterData } from '../static/FilterArticle';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
     const { articles } = useContext(NewsContext);
@@ -11,13 +12,30 @@ export default function HomePage() {
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
     const [filteredArticles, setFilteredArticles] = useState([]);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    // Filtering Data on the basis of category and Search
+    // Parse URL parameters to set initial state
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const searchParam = params.get('q') || '';
+        const categoryParam = params.get('category') || 'All';
+        setSearch(searchParam);
+        setCategory(categoryParam);
+    }, [location.search]);
+
+    // Filtering Data on the basis of category and search
     useEffect(() => {
         const newArticles = filterData({ data: articles, category, searchterm: search });
         setFilteredArticles(newArticles);
         setCurrentPage(1);
-    }, [category, search, articles]);
+
+        // Update URL with search and category parameters
+        const params = new URLSearchParams();
+        if (search) params.set('q', search.toLowerCase());
+        if (category && category !== 'All') params.set('category', category.toLowerCase());
+        navigate(`?${params.toString()}`, { replace: true });
+    }, [category, search, articles, navigate]);
 
     // Pagination Logic Starts
     const indexOfLastArticle = currentPage * articlesPerPage;
